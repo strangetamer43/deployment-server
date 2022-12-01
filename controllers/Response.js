@@ -25,12 +25,12 @@ export const submitResponse = async (req, res) => {
 
                     if (j < response.length) {
                         if (result.questions[i].id === response[j].questionId) {
-                            if (result.questions[i].questionType === "text") {
-                                j += 1;
-                            } else {
+                            if (result.questions[i].questionType === "mcq") {
                                 var option = result.questions[i].options.find(o => o.option === response[j].option)
                                 console.log(option)
                                 correctAnswer += option.value;
+                                j += 1;
+                            } else {
                                 j += 1;
                             }
 
