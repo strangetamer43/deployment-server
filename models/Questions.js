@@ -27,6 +27,9 @@ const questionsSchema = new mongoose.Schema({
         },
         questionType: {
             type: String
+        },
+        multipleAudio: {
+            type: Boolean
         }
     }],
     createdBy: {
