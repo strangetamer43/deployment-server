@@ -1,6 +1,20 @@
 import responseModel from "../models/Response.js";
 import questionModel from "../models/Questions.js";
 import userModel from "../models/user.js";
+export const createResponse = async (req, res) => {
+    try {
+        console.log("fd");
+        var newResponse = new responseModel();
+        await newResponse.save().then((result) => {
+            res.status(203).json(result)
+        }, error => {
+            res.status(403).json(error)
+        })
+    } catch (error) {
+        res.status(403).json(error)
+
+    }
+}
 export const submitResponse = async (req, res) => {
     try {
         const response = req.body.response
