@@ -28,7 +28,16 @@ const answersSchema = mongoose.Schema({
         type: String
     },
     videos: [{
-        type: String
+        type: String,
+        default: []
+    }],
+    screenRecording: [{
+        type: String,
+        default: []
+    }],
+    audioRecording: [{
+        type: String,
+        default: []
     }]
 })
 
