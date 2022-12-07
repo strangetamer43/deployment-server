@@ -110,9 +110,9 @@ export const registeredUser = async (req, res) => {
 }
 export const commentContest = async (req, res) => {
     const { id } = req.params;
-    const { value } = req.body;
+    const msg = req.body.value;
     const contest = await ContestMessage.findById(id);
-    contest.comments.push(value);
+    contest.comments.push(msg);
     const updatedContest = await ContestMessage.findByIdAndUpdate(id, contest, { new: true});
     res.json(updatedContest);
 }
