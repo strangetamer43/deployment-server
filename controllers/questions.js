@@ -141,9 +141,9 @@ export const disLikeQuestion = async (req, res) => {
 }
 export const commentQuestion = async (req, res) => {
     const { id } = req.params;
-    const { value } = req.body;
+    const msg = req.body.value;
     const question = await QuestionMessage.findById(id);
-    question.comments.push(value);
+    question.comments.push(msg);
     const updatedQuestion = await QuestionMessage.findByIdAndUpdate(id, question, { new: true});
     res.json(updatedQuestion);
 }
