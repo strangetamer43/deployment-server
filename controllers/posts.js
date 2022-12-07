@@ -155,9 +155,9 @@ export const disLikePost = async (req, res) => {
 }
 export const commentPost = async (req, res) => {
     const { id } = req.params;
-    const { value } = req.body;
+    const message = req.body.value;
     const post = await PostMessage.findById(id);
-    post.comments.push(value);
+    post.comments.push(message);
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true});
     res.json(updatedPost);
 }
