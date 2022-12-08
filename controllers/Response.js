@@ -68,6 +68,7 @@ export const submitResponse = async (req, res) => {
                                 if (correctAnswer <= result.numericalRange[i].scoreRange[j][0] && correctAnswer >= result.numericalRange[i].scoreRange[j][1]) {
                                     correctAnswer = result.numericalRange[i].scoreRange[j][2]
                                     grade = result.numericalRange[i].scoreRange[j][3]
+                                    break
                                 }
                             }
                         }
