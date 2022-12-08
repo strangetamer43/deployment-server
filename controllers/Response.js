@@ -185,7 +185,7 @@ export const submittingQuiz = async (req, res) => {
                             res.status(203).json({ message: "User is allowed to take the quiz" })
 
                         }
-                        else if (responses.filter(x => x.valueOf() === quizId).length < attempts) {
+                        else if (responses.filter(x => x.valueOf() == quizId).length < attempts) {
 
                             res.status(203).json({ message: "User is allowed to take the quiz" })
 
