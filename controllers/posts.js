@@ -3,6 +3,7 @@ import PostMessage from "../models/postMessage.js";
 import User from "../models/user.js";
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
+import fs from "fs";
 dotenv.config();
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
