@@ -12,6 +12,14 @@ const profileSchema = mongoose.Schema({
     name: String,
     avatarUrl: String,
     number: String,
+    experiences: [{
+        title: String,
+        emptype: String,
+        company: String,
+        start: String,
+        end: String,
+        current: Boolean
+    }]
 })
 
 const ProfileMessage = mongoose.model('ProfileMessage', profileSchema);
