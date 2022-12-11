@@ -3,7 +3,6 @@ import questionModel from "../models/Questions.js";
 import userModel from "../models/user.js";
 export const createResponse = async (req, res) => {
     try {
-        console.log("fd");
         var newResponse = new responseModel();
         await newResponse.save().then((result) => {
             res.status(203).json(result)
