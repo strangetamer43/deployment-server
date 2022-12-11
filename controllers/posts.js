@@ -57,6 +57,7 @@ export const createPost = async (req, res) => {
   
     try {
           newPost.save();
+          fs.unlinkSync(video.tempFilePath);
           res.status(201).json(newPost);
       } catch (error) {
           res.status(409).json({ message: error.message});
@@ -76,6 +77,7 @@ export const createPost = async (req, res) => {
   
     try {
           newPost.save();
+          fs.unlinkSync(image.tempFilePath);
           res.status(201).json(newPost);
       } catch (error) {
           res.status(409).json({ message: error.message});
