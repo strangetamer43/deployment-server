@@ -167,10 +167,8 @@ export const commentPost = async (req, res) => {
 }
 
 export const getUserPosts = async (req, res) => {
-    
-    const userId = req.userId;
+    const userId = req.body.userId;
     try {
-            
         const userPosts = await PostMessage.find({creator: userId}).sort({ _id: -1 });
         res.status(200).json({data: userPosts}); 
         
