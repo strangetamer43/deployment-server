@@ -1,6 +1,7 @@
 import mongoose  from "mongoose";
 import PostMessage from "../models/postMessage.js";
 import User from "../models/user.js";
+import ProfileMessage from "../models/profileMessage.js";
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 import fs from "fs";
@@ -193,4 +194,16 @@ export const getSpecificUserPosts = async (req, res) => {
         console.log(error);
         res.status(500).json({ message: error });
     }
+};
+
+export const getProfileByCreator = async (req, res) => {
+    try {
+
+        const creator = req.body.creator;
+        const user = await ProfileMessage.findOne({ creator: creator })
+        return res.status(203).json(user)
+    } catch (error) {
+        return res.status(403).json(error)
+    }
+
 };
