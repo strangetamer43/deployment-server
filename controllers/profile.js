@@ -30,7 +30,7 @@ export const updateProfile = async (req, res) => {
 
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No profile with that ID');
     const updatedProfile = await ProfileMessage.findByIdAndUpdate(_id, { ...profile, _id }, { new: true });
-    res.json(updatedProfile);
+    res.status(203).json(updatedProfile);
 }
 export const getUserProfile = async (req, res) => {
     
@@ -57,7 +57,7 @@ export const getProfiles = async (req, res) => {
 };
 export const getSpecificUserProfile = async (req, res) => {
     
-    const {creator} = req.body;
+    const creator = req.body.userId;
     
     try {
             
