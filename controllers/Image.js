@@ -20,6 +20,7 @@ const imageUpload = async (req, res) => {
         await cloudinary.uploader.upload(image.tempFilePath, async (err, resultB) => {
 
             const img = resultB.url;
+            fs.unlinkSync(image.tempFilePath);
             res.status(203).json(img)
 
         })
