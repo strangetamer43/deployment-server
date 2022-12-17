@@ -8,7 +8,7 @@ router.get('/search', getQuestionsBySearch );
 router.get('/', getQuestions );
 router.get('/:id', getQuestion);
 router.patch('/', auth, getUserQuestions);
-router.patch('/userspecific', auth, getSpecificUserQuestions)
+router.patch('/userspecific', auth, getSpecificUserQuestions);
 router.post('/', auth, createQuestion);
 router.patch('/:id', auth, updateQuestion);
 router.delete('/:id', auth, deleteQuestion);
