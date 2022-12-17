@@ -14,8 +14,8 @@ router.get('/', auth, getUserProfile);
 router.post('/', auth, createProfile);
 router.patch('/:id', auth, updateProfile);
 router.post('/userspecific', auth, getSpecificUserProfile);
-router.get("/:id", auth, getProfile);
-router.post("/getProfile", getProfileByCreator);
+router.get('/:id', auth, getProfile);
+router.post('/getProfile', getProfileByCreator);
 
 
 
