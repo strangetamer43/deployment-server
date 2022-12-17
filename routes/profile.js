@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/all', auth, getProfiles);
 router.get('/', auth, getUserProfile);
-router.post('/create', auth, createProfile);
+router.post('/', auth, createProfile);
 router.patch('/:id', auth, updateProfile);
 router.post('/userspecific', auth, getSpecificUserProfile);
 router.get("/:id", auth, getProfile);
