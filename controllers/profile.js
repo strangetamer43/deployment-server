@@ -14,7 +14,7 @@ export const createProfile = async (req, res) => {
     }
 }
 export const getProfile = async (req, res) => {
-    const { id } = req.params;
+    const { id: _id } = req.params;
     try {
         const profile = await ProfileMessage.findById(id);
         
