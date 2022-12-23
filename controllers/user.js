@@ -98,6 +98,21 @@ export const createUser = async (req, res) => {
         res.status(403).json({ message: error })
 
     }
-}
+};
 
-
+export const getSpecificUser = async (req, res) => {
+    
+    const data = req.body.userId;
+    
+    try {
+            
+        const specificUser = await User.findOne({creator: data}).sort({ _id: -1 });
+        res.status(200).json({data: specificUser}); 
+        
+        
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error });
+    }
+};
