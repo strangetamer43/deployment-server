@@ -104,9 +104,10 @@ export const getSpecificUser = async (req, res) => {
     
     const {data} = req.body;
     
+    if (data.length > 22){
     try {
             
-        const specificUser = await User.findOne({googleId: data}).sort({ _id: -1 });
+        const specificUser = await User.findOne({ _id: data }).sort({ _id: -1 });
         res.status(200).json({data: specificUser}); 
         
         
@@ -114,5 +115,18 @@ export const getSpecificUser = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error });
+    }}
+    else {
+        try {
+            
+            const specificUser = await User.findOne({ googleId: data }).sort({ _id: -1 });
+            res.status(200).json({data: specificUser}); 
+            
+            
+            
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: error });
+        }
     }
 };
