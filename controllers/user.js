@@ -106,7 +106,7 @@ export const getSpecificUser = async (req, res) => {
     
     try {
             
-        const specificUser = await User.findOne({creator: data}).sort({ _id: -1 });
+        const specificUser = await User.findOne({googleId: data}).sort({ _id: -1 });
         res.status(200).json({data: specificUser}); 
         
         
