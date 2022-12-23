@@ -102,7 +102,7 @@ export const createUser = async (req, res) => {
 
 export const getSpecificUser = async (req, res) => {
     
-    const data = req.body.userId;
+    const {data} = req.body;
     
     try {
             
