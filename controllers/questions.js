@@ -165,7 +165,7 @@ export const getUserQuestions = async (req, res) => {
 };
 export const getSpecificUserQuestions = async (req, res) => {
     
-    const creator = req.body.userId;
+    const {creator} = req.body;
     
     try {
             
