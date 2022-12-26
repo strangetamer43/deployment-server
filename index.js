@@ -13,7 +13,7 @@ import profileRoutes from './routes/profile.js';
 import taskRoutes from './routes/tasks.js';
 import followersRoutes from './routes/followers.js';
 import questionRouter from "./routes/Questions.js";
-
+import contactRouter from './routes/contact.js';
 import imageRouter from "./routes/Image.js";
 const app = express();
 dotenv.config();
@@ -33,7 +33,7 @@ app.use('/profiles', profileRoutes);
 app.use('/followers', followersRoutes);
 app.use('/tasks', taskRoutes);
 app.use("/", questionRouter);
-
+app.use('/contact', contactRouter);
 app.use("/image", imageRouter);
 app.get('/', (req, res) => {
     res.send('App is running');
