@@ -5,6 +5,6 @@ import expressFormidable from 'express-formidable';
 
 const router = express.Router();
 
-router.post('/', auth, createContact);
+router.post('/', createContact);
 
 export default router;
