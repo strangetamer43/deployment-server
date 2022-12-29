@@ -43,7 +43,7 @@ export const signup = async (req, res) => {
         const result = await User.create({ username, password: hashedPassword, name, phoneNumber, emailId, imageUrl: img });
         try {
 
-            const token = jwt.sign({ username: result.username, id: result._id }, 'test', { expiresIn: "2h" });
+            const token = jwt.sign({ username: result.username, id: result._id }, process.env.JWT_SECRET, { expiresIn: "2h" });
             fs.unlinkSync(image.tempFilePath)
             res.status(200).json({ result, token });
         } catch (error) {
@@ -66,7 +66,7 @@ export const signin = async (req, res) => {
 
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
         if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid Credentials!" });
-        const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, 'test', { expiresIn: "2h" });
+        const token = jwt.sign({ username: existingUser.username, id: existingUser._id }, process.env.JWT_SECRET, { expiresIn: "2h" });
 
         res.status(200).json({ result: existingUser, token });
     } catch (error) {
