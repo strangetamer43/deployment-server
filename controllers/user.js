@@ -88,7 +88,7 @@ export const createUser = async (req, res) => {
                 console.log(result);
                 res.status(203).json(result)
             } else {
-                const result = await User.create({ name: data.name, emailId: data.email, username: data.givenName, googleId: data.googleId })
+                const result = await User.create({ name: data.name, emailId: data.email, username: data.givenName, googleId: data.googleId, imageUrl: data.imageUrl })
                 console.log(res);
                 res.status(203).json(result)
 
