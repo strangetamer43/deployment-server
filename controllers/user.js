@@ -130,3 +130,99 @@ export const getSpecificUser = async (req, res) => {
         }
     }
 };
+
+export const removerFollower = async (req, res) => {
+    const follower = req.body.follower;
+    const user = req.body.user;
+    try {
+        User.updateOne(
+            { _id: user._id },
+            { $pull: { followers: { user: follower._id, name: follower.name, userName: follower.username } } })
+            .then(() => {
+                console.log("Follower removed")
+            }).catch((err) => {
+                console.log(err)
+            })
+
+        User.updateOne(
+            { _id: follower._id },
+            { $pull: { following: { user: user._id, name: user.name, userName: user.username } } })
+            .then(() => {
+                console.log("Follower removed")
+            }).catch((err) => {
+                console.log(err)
+            })
+        User.findById(follower._id, (err, result2) => {
+            if (err) {
+                console.log(err)
+                res.status(403).json(err)
+
+            } else {
+                res.status(203).json(result2)
+
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(403).json(error)
+    }
+};
+
+export const addFollower = async (req, res) => {
+    const follower = req.body.follower;
+    const user = req.body.user;
+    console.log(user)
+    console.log(follower)
+    try {
+        User.findById(follower._id, (err, result) => {
+            if (err) {
+                res.status(403).json(err)
+            } else {
+                var i;
+                for (i = 0; i < result.following.length; i++) {
+                    if (result.following[i].user === user._id) {
+                        res.status(203).json(result)
+                        return
+                    }
+                }
+                if (!result.following.includes()) {
+
+                    User.updateOne(
+                        { _id: user._id },
+                        { $push: { followers: { user: follower._id, name: follower.name, userName: follower.username } } })
+                        .then(() => {
+                            console.log("New Following added")
+                        }).catch(error => console.log(error)
+
+                        )
+                    User.updateOne(
+                        { _id: follower._id },
+                        { $push: { following: { user: user._id, name: user.name, userName: user.username } } })
+                        .then(() => {
+                            console.log("New Following added")
+                        }).catch(error => console.log(error)
+                        )
+                    User.findById(follower._id, (err, result2) => {
+                        if (err) {
+                            res.status(403).json(err)
+
+                        } else {
+                            res.status(203).json(result2)
+
+                        }
+                    })
+
+                } else {
+                    res.status(203).json(result)
+
+                }
+            }
+        })
+
+
+    }
+    catch (err) {
+        console.log(err)
+        res.status(403).json(err)
+    }
+};
