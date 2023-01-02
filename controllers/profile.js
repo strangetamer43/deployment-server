@@ -31,7 +31,7 @@ export const updateProfile = async (req, res) => {
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No profile with that ID');
     const updatedProfile = await ProfileMessage.findByIdAndUpdate(_id, { ...profile, _id }, { new: true });
     res.status(203).json(updatedProfile);
-}
+};
 export const getUserProfile = async (req, res) => {
     
     const userId = req.userId;
@@ -70,4 +70,15 @@ export const getSpecificUserProfile = async (req, res) => {
         console.log(error);
         res.status(500).json({ message: error });
     }
+};
+export const addExperience = async (req, res) => {
+    const { id } = req.params;
+
+    const experience = req.body.profile.experience;
+    console.log(experience)
+    const profile = await ProfileMessage.findById(id);
+    profile.experiences.push(experience);
+    const updateProfile = await ProfileMessage.findByIdAndUpdate(id, profile, { new: true });
+    res.json(updateProfile);
+
 };
