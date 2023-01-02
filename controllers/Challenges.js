@@ -48,11 +48,14 @@ export const editQUiz = async (req, res) => {
 
         var data = req.body;
         var totalDuration = 0;
-        for (var i = 0; i < data.questions.length; i++) {
-            var time = (data.questions[i].duration.minutes + data.questions[i].duration.seconds / 60);
-            totalDuration += time
+        if (data.questions) {
+
+            for (var i = 0; i < data.questions.length; i++) {
+                var time = (data.questions[i].duration.minutes + data.questions[i].duration.seconds / 60);
+                totalDuration += time
+            }
+            data['totalDuration'] = totalDuration;
         }
-        data['totalDuration'] = totalDuration;
 
         questionModel.findByIdAndUpdate(quizId, data, { new: true }, (err, result) => {
             if (err) {
