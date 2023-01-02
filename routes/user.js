@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.post('/signup', signup);
 router.post('/signin', signin);
-router.post("/createUser", createUser)
-router.patch("/", getSpecificUser)
+router.post("/createUser", createUser);
+router.patch("/", getSpecificUser);
+router.post("/follow", auth, addFollower);
+router.post("/unfollow", auth, removerFollower);
 export default router;
