@@ -16,7 +16,18 @@ const userSchema = mongoose.Schema({
     }],
     googleId: {
         type: String
-    }
+    },
+    followers: [{
+        user: String,
+        name: String,
+        userName: String
+    }],
+    following: [{
+        user: String,
+        name: String,
+        userName: String
+
+    }]
 })
 
 export default mongoose.model("User", userSchema);
