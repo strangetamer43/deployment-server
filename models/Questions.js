@@ -80,7 +80,14 @@ const questionsSchema = new mongoose.Schema({
     },
     recording: {
         type: String
-    }
+    },
+    terms: {
+        type: Boolean
+
+    },
+    termsText: {
+        type: String
+    },
 
 
 })
