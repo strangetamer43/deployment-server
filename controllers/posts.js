@@ -212,12 +212,12 @@ export const getPostLazyLoading = async (req, res) => {
         const LIMIT = 2
         const startIndex = (Number(page) - 1) * LIMIT;
 
-        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex)
-        res.status(203).json(posts)
+        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+        res.status(203).json(posts);
     } catch (error) {
-        console.log("fkdpk")
-        console.log(error)
-        res.status(403).json(error)
+        
+        console.log(error);
+        res.status(403).json(error);
 
     }
 }; 
