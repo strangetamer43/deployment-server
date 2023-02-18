@@ -32,6 +32,9 @@ const videoUpload = async (req, res) => {
         }).then((result) => {
 
             console.log(result.url)
+            if (!type) {
+                res.status(203).json(result.url)
+            }
             // first find response and then push video in it 
             responseModel.findById(resid, (err, result1) => {
                 if (type === "video") {
