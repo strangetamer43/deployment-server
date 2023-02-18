@@ -1,7 +1,9 @@
-import express from "express";
+import express, { response } from "express";
 import { v2 as cloudinary } from 'cloudinary';
 import responseModel from "../models/Response.js";
 import fs from "fs"
+
+
 
 
 cloudinary.config({
@@ -13,8 +15,12 @@ cloudinary.config({
 // after uploading the video directly add it directly to the list of videos for the response 
 const videoUpload = async (req, res) => {
     console.log("Hello i am here")
-    const responseId = req.body.resid;
     const video = req.files.file;
+    const resid = req.body.responseid;
+    const type = req.body.type;
+    console.log("video start")
+    console.log(resid)
+    console.log(type)
     console.log(video)
     try {
         await cloudinary.uploader.upload(video.tempFilePath, {
@@ -26,13 +32,55 @@ const videoUpload = async (req, res) => {
         }).then((result) => {
 
             console.log(result.url)
-            fs.unlinkSync(video.tempFilePath)
-            res.status(203).json(result.url)
+            // first find response and then push video in it 
+            responseModel.findById(resid, (err, result1) => {
+                if (type === "video") {
+                    let newvideos = result1.videos;
+                    newvideos.push(result.url)
+
+                    responseModel.findByIdAndUpdate(resid, { videos: newvideos }, { new: true }, (err, result2) => {
+                        if (err) {
+                            res.status(203).json({ error: err })
+                        } else {
+                            console.log(result2);
+                        }
+                    })
+                    fs.unlinkSync(video.tempFilePath)
+                    res.status(203).json(result.url)
+                } else if (type === "screen") {
+                    let newvideos = result1.screenRecording;
+                    newvideos.push(result.url)
+                    responseModel.findByIdAndUpdate(resid, { screenRecording: newvideos }, { new: true }, (err, result2) => {
+                        if (err) {
+                            res.status(203).json({ error: err })
+                        } else {
+                            console.log(result2);
+                        }
+                    })
+                    fs.unlinkSync(video.tempFilePath)
+                    res.status(203).json(result.url)
+
+                } else if (type === "audio") {
+                    let newvideos = result1.audioRecording;
+                    newvideos.push(result.url)
+                    responseModel.findByIdAndUpdate(resid, { audioRecording: newvideos }, { new: true }, (err, result2) => {
+                        if (err) {
+                            res.status(203).json({ error: err })
+                        } else {
+                            console.log(result2);
+                        }
+                    })
+                    fs.unlinkSync(video.tempFilePath)
+                    res.status(203).json(result.url)
+                }
+            })
         })
 
     } catch (error) {
         res.status(403).json({ message: error })
     }
+    console.log("video end")
+
 
 }
 
