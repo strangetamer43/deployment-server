@@ -249,3 +249,19 @@ export const getResponseByUserName = async (req, res) => {
 
 // get a response by a question id 
 
+export const getResponseLazyLoading = async (req, res) => {
+    try {
+        const { page } = req.body;
+        const { quizId } = req.body;
+        const LIMIT = 5
+        const startIndex = (Number(page) - 1) * LIMIT;
+
+        const responses = await responseModel.find({ quizId }).sort({ _id: -1 }).limit(LIMIT).skip(startIndex)
+        res.status(203).json(responses)
+    } catch (error) {
+        console.log("fkdpk")
+        console.log(error)
+        res.status(403).json(error)
+
+    }
+}
