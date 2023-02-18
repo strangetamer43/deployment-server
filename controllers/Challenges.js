@@ -182,4 +182,37 @@ export const getQuizBySearch = async (req, res) => {
     }
 }
 
+export const getQuizsOfUserLazyLoading = async (req, res) => {
+    try {
+        const { page } = req.body;
+        const { userId } = req.body;
+        const LIMIT = 2
+        const startIndex = (Number(page) - 1) * LIMIT;
 
+
+        const quizs = await questionModel.find({ createdBy: userId }).sort({ _id: -1 }).limit(LIMIT).skip(startIndex)
+        res.status(203).json(quizs)
+    } catch (error) {
+        console.log("fkdpk")
+        console.log(error)
+        res.status(403).json(error)
+
+    }
+}
+
+export const getQuizsLazyLoading = async (req, res) => {
+    try {
+        const { page } = req.body;
+        const LIMIT = 2
+        const startIndex = (Number(page) - 1) * LIMIT;
+
+        const quizs = await questionModel.find({ visibility: true }).sort({ _id: -1 }).limit(LIMIT).skip(startIndex)
+        console.log(quizs)
+        res.status(203).json(quizs)
+    } catch (error) {
+        console.log("fkdpk")
+        console.log(error)
+        res.status(403).json(error)
+
+    }
+}
