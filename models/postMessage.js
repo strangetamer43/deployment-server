@@ -6,8 +6,15 @@ const postSchema = mongoose.Schema({
     name: String,
     creator: String,
     tags: [String],
-    imageUrl: String,
-    videoUrl: String,
+    imageUrl: [{
+        type: String
+    }],
+    videoUrl: [{
+        type: String
+    }],
+    thumbnail: {
+        type: String
+    },
     public_id: String,
     public_idV: String,
     avatarUrl: String,
