@@ -187,8 +187,7 @@ export const submittingQuiz = async (req, res) => {
             } else {
                 const attempts = qresult.attempts;
                 userModel.findById(userId, (err, uresult) => {
-                    const responses = uresult.responses;
-                    console.log(responses[responses.length - 1])
+                    const responses = uresult?.responses;
 
                     if (err) {
                         res.status(403).json({ message: err.message })
@@ -253,7 +252,7 @@ export const getResponseLazyLoading = async (req, res) => {
     try {
         const { page } = req.body;
         const { quizId } = req.body;
-        const LIMIT = 5
+        const LIMIT = 8
         const startIndex = (Number(page) - 1) * LIMIT;
 
         const responses = await responseModel.find({ quizId }).sort({ _id: -1 }).limit(LIMIT).skip(startIndex)
