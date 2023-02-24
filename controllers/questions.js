@@ -179,3 +179,19 @@ export const getSpecificUserQuestions = async (req, res) => {
         res.status(500).json({ message: error });
     }
 };
+
+export const getQuestionsLazyLoading = async (req, res) => {
+    try {
+        const { page } = req.body;
+        const LIMIT = 4
+        const startIndex = (Number(page) - 1) * LIMIT;
+
+        const questions = await QuestionMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex)
+        res.status(203).json(questions)
+    } catch (error) {
+        console.log("fkdpk")
+        console.log(error)
+        res.status(403).json(error)
+
+    }
+};   
