@@ -209,7 +209,7 @@ export const getProfileByCreator = async (req, res) => {
 export const getPostLazyLoading = async (req, res) => {
     try {
         const { page } = req.body;
-        const LIMIT = 2
+        const LIMIT = 4
         const startIndex = (Number(page) - 1) * LIMIT;
 
         const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
