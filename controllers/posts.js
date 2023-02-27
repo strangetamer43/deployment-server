@@ -43,62 +43,73 @@ export const getPostsBySearch = async (req, res) => {
     }
 }
 export const createPost = async (req, res) => {
-  
-  const video = req.files.video;
-  const image = req.files.image;
-  
-  if (!image) {
-    const vid_name = video.name;
-    const vid_path = video.tempFilePath;
-    cloudinary.uploader.upload(vid_path, {resource_type: "video", public_id: `usurp/${vid_name}`, notification_url: "http://localhost:5000/posts", overwrite: true, quality: "auto"}, (error, result) => {
-    const { title, message, tags, name, avatarUrl } = req.body;
-    const vid = result?.url;
-    const pub = result?.public_id;
-    const newPost = new PostMessage({ title, message, tags, name, avatarUrl, videoUrl: vid, public_idV: pub, creator: req.userId, createdAt: new Date().toISOString() });
-  
-  
-    try {
-          newPost.save();
-          fs.unlinkSync(video.tempFilePath);
-          res.status(201).json(newPost);
-      } catch (error) {
-          res.status(409).json({ message: error.message});
-          
-      }
-  }
- 
-  ); 
-} else if(!video) {
-  cloudinary.uploader.upload(image.tempFilePath,{quality: "auto"}, (err, result) => {
     
-    const { title, message, tags, name, avatarUrl } = req.body;
-   const img = result.url;
-   const pub = result.public_id;
-    const newPost = new PostMessage({ title, message, tags, name, avatarUrl, imageUrl: img, public_id: pub, creator: req.userId, createdAt: new Date().toISOString() });
-  
-  
+    var data = req.body;
+    data['createdAt'] = new Date().toISOString();
+    const newPost = new PostMessage(data)
     try {
-          newPost.save();
-          fs.unlinkSync(image.tempFilePath);
-          res.status(201).json(newPost);
-      } catch (error) {
-          res.status(409).json({ message: error.message});
-          
-      }
-      
-});
-
-} else if(!image && !video){
-    const { title, message, tags, name, avatarUrl } = req.body;
-    const newPost = new PostMessage({ title, message, tags, name, avatarUrl, creator: req.userId, createdAt: new Date().toISOString() })
-    try {
-        await newPost.save();
-        res.status(201).json(newPost);
+        newPost.save();
+        res.status(203).json(newPost)
     } catch (error) {
-        res.status(409).json({ message: error.message});
-        
+        console.log(error)
+        res.status(403).json(error)
     }
-}
+  
+  // const video = req.files.video;
+  // const image = req.files.image;
+  
+  // if (!image) {
+   // const vid_name = video.name;
+   // const vid_path = video.tempFilePath;
+   // cloudinary.uploader.upload(vid_path, {resource_type: "video", public_id: `usurp/${vid_name}`, notification_url: "http://localhost:5000/posts", overwrite: true, quality: "auto"}, (error, result) => {
+   // const { title, message, tags, name, avatarUrl } = req.body;
+   // const vid = result?.url;
+   // const pub = result?.public_id;
+   // const newPost = new PostMessage({ title, message, tags, name, avatarUrl, videoUrl: vid, public_idV: pub, creator: req.userId, createdAt: new Date().toISOString() });
+  
+  
+   // try {
+   //       newPost.save();
+   //       fs.unlinkSync(video.tempFilePath);
+   //       res.status(201).json(newPost);
+   //   } catch (error) {
+   //       res.status(409).json({ message: error.message});
+          
+   //   }
+ // }
+ 
+ // ); 
+// } else if(!video) {
+//  cloudinary.uploader.upload(image.tempFilePath,{quality: "auto"}, (err, result) => {
+    
+//    const { title, message, tags, name, avatarUrl } = req.body;
+//   const img = result.url;
+//   const pub = result.public_id;
+//    const newPost = new PostMessage({ title, message, tags, name, avatarUrl, imageUrl: img, public_id: pub, creator: req.userId, createdAt: new Date().toISOString() });
+  
+  
+ //   try {
+ //         newPost.save();
+ //         fs.unlinkSync(image.tempFilePath);
+ //         res.status(201).json(newPost);
+ //     } catch (error) {
+ //         res.status(409).json({ message: error.message});
+          
+ //     }
+      
+// });
+
+// } else if(!image && !video){
+//    const { title, message, tags, name, avatarUrl } = req.body;
+//    const newPost = new PostMessage({ title, message, tags, name, avatarUrl, creator: req.userId, createdAt: new Date().toISOString() })
+//    try {
+//        await newPost.save();
+//        res.status(201).json(newPost);
+//    } catch (error) {
+//        res.status(409).json({ message: error.message});
+        
+//    }
+// }
  
 }
 
