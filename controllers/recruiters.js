@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import fs from "fs"
 import dotenv from 'dotenv';
 
-import Recruiter from '../models/recruiter.js';
+import Recruiter from '../models/recruiters.js';
 
 dotenv.config();
 cloudinary.config({
