@@ -16,7 +16,7 @@ import questionRouter from "./routes/Questions.js";
 import contactRouter from './routes/contact.js';
 import imageRouter from "./routes/Image.js";
 import recruiterRouter from "./Routes/recruiters.js"
-import cookieParser from "cookie-parser";
+
 const app = express();
 dotenv.config();
 
