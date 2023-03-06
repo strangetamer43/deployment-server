@@ -1,4 +1,4 @@
-import Recruiters from "../models/recruiter.js"
+import Recruiters from "../models/recruiters.js"
 const authRecruiter = async (req , res , next) => {
     //get user info by id
     const recruiter = await Recruiters.findOneById({
