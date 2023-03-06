@@ -15,6 +15,8 @@ import followersRoutes from './routes/followers.js';
 import questionRouter from "./routes/Questions.js";
 import contactRouter from './routes/contact.js';
 import imageRouter from "./routes/Image.js";
+import recruiterRouter from "./Routes/recruiters.js"
+import cookieParser from "cookie-parser";
 const app = express();
 dotenv.config();
 
@@ -35,6 +37,7 @@ app.use('/tasks', taskRoutes);
 app.use("/", questionRouter);
 app.use('/contact', contactRouter);
 app.use("/image", imageRouter);
+app.use("/recruiter",recruiterRouter);
 app.get('/', (req, res) => {
     res.send('App is running');
 });
