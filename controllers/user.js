@@ -226,3 +226,15 @@ export const addFollower = async (req, res) => {
         res.status(403).json(err)
     }
 };
+export const getUser = async (req,res) =>{
+    console.log("Getting user Info")
+    const { id } = req.params;
+    try {
+        const question = await User.findById(id);
+
+        res.status(200).json(question);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+
+    }
+};
