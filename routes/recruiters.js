@@ -12,7 +12,7 @@ router.post('/signinRecruiter', signin);
 //router.get("/recruiter"  , getRecruiter); //whether user logged in
 router.post("/createRecruiter", createRecruiter);
 router.get("/getRecruiter/:id" ,getRecruiter);
-router.get("/recruiterSpecific",getSpecificRecruiter);
+router.post("/recruiterSpecific",getSpecificRecruiter);
 /* router.post("/follow", auth, addFollower)
 router.post("/unfollow", auth, removerFollower)
  */
