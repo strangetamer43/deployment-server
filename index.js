@@ -37,7 +37,7 @@ app.use('/tasks', taskRoutes);
 app.use("/", questionRouter);
 app.use('/contact', contactRouter);
 app.use("/image", imageRouter);
-app.use("/recruiter",recruiterRouter);
+app.use("/recruiter", recruiterRouter);
 app.get('/', (req, res) => {
     res.send('App is running');
 });
