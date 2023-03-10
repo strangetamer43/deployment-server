@@ -10,9 +10,9 @@ router.post('/signupRecruiter',signup);
 router.post('/signinRecruiter', signin);
 //router.post('/createTest', recruiterController.addTest);
 //router.get("/recruiter"  , getRecruiter); //whether user logged in
-router.post("/createRecruiter", createRecruiter)
-router.get("/getRecruiter/:id" ,getRecruiter)
-router.get("/recruiterSpecific",getSpecificRecruiter)
+router.post("/createRecruiter", createRecruiter);
+router.get("/getRecruiter/:id" ,getRecruiter);
+router.get("/recruiterSpecific",getSpecificRecruiter);
 /* router.post("/follow", auth, addFollower)
 router.post("/unfollow", auth, removerFollower)
  */
