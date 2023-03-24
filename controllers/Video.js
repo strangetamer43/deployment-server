@@ -14,14 +14,9 @@ cloudinary.config({
 
 // after uploading the video directly add it directly to the list of videos for the response 
 const videoUpload = async (req, res) => {
-    console.log("Hello i am here")
     const video = req.files.file;
     const resid = req.body.responseid;
     const type = req.body.type;
-    console.log("video start")
-    console.log(resid)
-    console.log(type)
-    console.log(video)
     try {
         await cloudinary.uploader.upload(video.tempFilePath, {
             resource_type: "video",
