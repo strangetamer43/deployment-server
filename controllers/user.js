@@ -78,9 +78,7 @@ export const signin = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
-        console.log(":nw");
         const data = req.body;
-        console.log(data);
         await User.findOne({ googleId: data.googleId }, async (err, result) => {
             if (err) {
                 res.status(403).json({ message: err })
@@ -227,7 +225,6 @@ export const addFollower = async (req, res) => {
     }
 };
 export const getUser = async (req,res) =>{
-    console.log("Getting user Info")
     const { id } = req.params;
     try {
         const question = await User.findById(id);
