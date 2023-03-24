@@ -9,5 +9,5 @@ router.post("/createUser", createUser);
 router.patch("/", getSpecificUser);
 router.post("/follow", auth, addFollower);
 router.post("/unfollow", auth, removerFollower);
-router.get("/getUser/:id" ,getUser);
+router.get("/getUser/:id", getUser);
 export default router;
