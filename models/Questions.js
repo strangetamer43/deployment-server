@@ -33,8 +33,9 @@ const questionsSchema = new mongoose.Schema({
         }
     }],
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
+        type: String
+        //type: mongoose.Schema.Types.ObjectId,
+        //ref: 'user'
     },
     description: {
         type: String
