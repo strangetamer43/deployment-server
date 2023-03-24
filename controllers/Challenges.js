@@ -1,5 +1,6 @@
 import questionModel from "../models/Questions.js";
 import userModel from "../models/user.js";
+import recruiterModel from "../models/recruiters.js";
 import { v2 as cloudinary } from 'cloudinary';
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
@@ -22,7 +23,7 @@ export const createQuiz = async (req, res) => {
         }
         var newQuiz = new questionModel(data)
         await newQuiz.save().then((docs) => {
-            userModel.updateOne(
+            recruiterModel.updateOne(
                 { _id: data.createdBy },
                 { $push: { quizs: docs._id } })
                 .then(() => {
@@ -93,7 +94,7 @@ export const getAllQuizOfUser = async (req, res) => {
     try {
         const userId = req.params.userId;
         console.log(userId);
-        userModel.findById(userId, async (err, result) => {
+        recruiterModel.findById(userId, async (err, result) => {
             if (err) {
                 res.status(403).json({ message: "User not found" })
             } else {
