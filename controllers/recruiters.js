@@ -15,7 +15,6 @@ cloudinary.config({
 });
 
 export const signup = async (req, res) => {
-    console.log("dkjfh")
     const image = req.files.image;
     console.log(image);
     cloudinary.uploader.upload(image.tempFilePath, async (err, resultB) => {
@@ -87,9 +86,9 @@ export const signin = async (req, res) => {
  */
 export const createRecruiter = async (req, res) => {
     try {
-        console.log(":nw");
+        
         const data = req.body;
-        console.log(data);
+        
         await Recruiter.findOne({ googleId: data.googleId }, async (err, result) => {
             if (err) {
                 res.status(403).json({ message: err })
@@ -121,7 +120,7 @@ export const createRecruiter = async (req, res) => {
     //res.json(req.user) Id of the user
 }; */
 export const getRecruiter = async (req,res) =>{
-    console.log("Getting user Info")
+    
     const { id } = req.params;
     try {
         const recruiter = await Recruiter.findById(id);
@@ -143,7 +142,7 @@ export const getSpecificRecruiter = async (req, res) => {
 
             res.status(200).json({ data: specificRecruiter });
         } else {
-            User.findById(data, (err, result) => {
+            Recruiter.findById(data, (err, result) => {
                 if (err) {
                     res.status(403).json(err)
                 } else {
