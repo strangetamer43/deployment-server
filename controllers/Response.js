@@ -17,8 +17,7 @@ export const createResponse = async (req, res) => {
 }
 export const submitResponse = async (req, res) => {
     try {
-        const response = req.body.response
-        console.log(response)
+        const response = req.body.response;
         const id = req.body.id;
 
 
@@ -54,7 +53,7 @@ export const submitResponse = async (req, res) => {
                     }
 
                 }
-                console.log(correctAnswer)
+                
                 let grade = ""
                 if (result.scoring === "normal") {
                     for (let i = 0; i < result.result.data.length; i++) {
@@ -77,8 +76,6 @@ export const submitResponse = async (req, res) => {
                         }
                     }
                 }
-                console.log(grade)
-                console.log(correctAnswer)
 
                 data["grade"] = grade;
                 data["correctAnswers"] = correctAnswer;
@@ -179,8 +176,6 @@ export const submittingQuiz = async (req, res) => {
     try {
         const userId = req.body.userId;
         const quizId = req.body.quizId;
-
-
         questionModel.findById(quizId, (err, qresult) => {
             if (err) {
                 res.status(403).json({ message: err.message })
