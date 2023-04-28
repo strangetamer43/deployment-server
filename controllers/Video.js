@@ -14,6 +14,7 @@ cloudinary.config({
 
 // after uploading the video directly add it directly to the list of videos for the response 
 const videoUpload = async (req, res) => {
+    req.connection.setTimeout(400000);
     const video = req.files.file;
     const resid = req.body.responseid;
     const type = req.body.type;
