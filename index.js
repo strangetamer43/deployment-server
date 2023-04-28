@@ -16,6 +16,7 @@ import questionRouter from "./routes/Questions.js";
 import contactRouter from './routes/contact.js';
 import imageRouter from "./routes/Image.js";
 import recruiterRouter from "./routes/recruiters.js";
+import templateRouter from "./routes/Templates.js";
 
 const app = express();
 dotenv.config();
@@ -38,6 +39,7 @@ app.use("/", questionRouter);
 app.use('/contact', contactRouter);
 app.use("/image", imageRouter);
 app.use("/recruiter", recruiterRouter);
+app.use("/template", templateRouter);
 app.get('/', (req, res) => {
     res.send('App is running');
 });
