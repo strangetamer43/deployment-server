@@ -1,78 +1,102 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { v2 as cloudinary } from 'cloudinary';
-import fs from "fs"
-import dotenv from 'dotenv';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import fs from "fs";
+import dotenv from "dotenv";
+import { s3, s3Client } from "../s3.js";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import Recruiter from '../models/recruiters.js';
+import Recruiter from "../models/recruiters.js";
 
 dotenv.config();
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API,
-    api_secret: process.env.CLOUDINARY_SECRET
-});
-
 export const signup = async (req, res) => {
-    const image = req.files.image;
-    console.log(image);
-    cloudinary.uploader.upload(image.tempFilePath, async (err, resultB) => {
-        const { name, username, password, confirmPassword, phoneNumber, emailId } = req.body;
-        const img = resultB.url;
-        const pub = resultB.public_id;
-        const existingRecruiter = await Recruiter.findOne({ username });
-        if (existingRecruiter) {
-            console.log("Recruiter exist")
-            return res.status(400).json({ message: "Recruiter already exists!" });
-        }
-        if (password.length < 8) {
-            console.log("password short")
-            return res.status(400).json({ message: "Password is too short!" });
-        }
-        if (password !== confirmPassword) {
-            console.log("password not match")
-            return res.status(400).json({ message: "Passwords don't match!" });
-        }
-        const hashedPassword = await bcrypt.hash(password, 12);
-        if (phoneNumber.length !== 10) {
-            console.log("mobile number")
-            return res.status(400).json({ message: "Phone number is invalid!" });
-        }
-        const result = await Recruiter.create({ username, password: hashedPassword, name, phoneNumber, emailId, imageUrl: img });
-        try {
+  const image = req.files.image;
+  console.log(image);
 
-            const token = jwt.sign({ username: result.username, id: result._id }, 'test', { expiresIn: "2h" });
-            fs.unlinkSync(image.tempFilePath)
-
-            res.status(200).json({ result, token });
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ message: error });
-        }
+  const img_name = `${Date.now()}-${image.name}`;
+  const response = await s3.putObject({
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: img_name,
+    Body: image.data,
+  });
+  if (response.$metadata.httpStatusCode === 200) {
+    const { name, username, password, confirmPassword, phoneNumber, emailId } =
+      req.body;
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET,
+      Key: img_name,
     });
+    // Generate a pre-signed URL for the media item
+    const img = await getSignedUrl(s3Client, command);
+    const pub = img_name;
+    const existingRecruiter = await Recruiter.findOne({ username });
+    if (existingRecruiter) {
+      console.log("Recruiter exist");
+      return res.status(400).json({ message: "Recruiter already exists!" });
+    }
+    if (password.length < 8) {
+      console.log("password short");
+      return res.status(400).json({ message: "Password is too short!" });
+    }
+    if (password !== confirmPassword) {
+      console.log("password not match");
+      return res.status(400).json({ message: "Passwords don't match!" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 12);
+    if (phoneNumber.length !== 10) {
+      console.log("mobile number");
+      return res.status(400).json({ message: "Phone number is invalid!" });
+    }
+    const result = await Recruiter.create({
+      username,
+      password: hashedPassword,
+      name,
+      phoneNumber,
+      emailId,
+      imageUrl: img,
+    });
+    try {
+      const token = jwt.sign(
+        { username: result.username, id: result._id },
+        "test",
+        { expiresIn: "2h" }
+      );
+      fs.unlinkSync(image.tempFilePath);
+
+      res.status(200).json({ result, token });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  }
 };
 
-
-
 export const signin = async (req, res) => {
-    const { username, password } = req.body;
-    try {
+  const { username, password } = req.body;
+  try {
+    const existingRecruiter = await Recruiter.findOne({ username });
 
+    if (!existingRecruiter)
+      return res.status(404).json({ message: "User doesn't exist!" });
 
-        const existingRecruiter = await Recruiter.findOne({ username });
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      existingRecruiter.password
+    );
+    if (!isPasswordCorrect)
+      return res.status(400).json({ message: "Invalid Credentials!" });
+    const token = jwt.sign(
+      { username: existingRecruiter.username, id: existingRecruiter._id },
+      "test",
+      { expiresIn: "2h" }
+    );
 
-        if (!existingRecruiter) return res.status(404).json({ message: "User doesn't exist!" });
-
-        const isPasswordCorrect = await bcrypt.compare(password, existingRecruiter.password);
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid Credentials!" });
-        const token = jwt.sign({ username: existingRecruiter.username, id: existingRecruiter._id }, 'test', { expiresIn: "2h" });
-
-        res.status(200).json({ result: existingRecruiter, token });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error });
-    }
+    res.status(200).json({ result: existingRecruiter, token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
 };
 /* export const getUser = async (req , res) => {
     const user = await User.findById(req.user.id).select('-password')
@@ -85,28 +109,33 @@ export const signin = async (req, res) => {
 };
  */
 export const createRecruiter = async (req, res) => {
-    try {
-        
-        const data = req.body;
-        
-        await Recruiter.findOne({ googleId: data.googleId }, async (err, result) => {
-            if (err) {
-                res.status(403).json({ message: err })
-            } else if (result) {
-                console.log(result);
-                res.status(203).json(result)
-            } else {
-                const result = await Recruiter.create({ name: data.name, emailId: data.email, username: data.givenName, googleId: data.googleId, imageUrl: data.imageUrl })
-                console.log(res);
-                res.status(203).json(result)
+  try {
+    const data = req.body;
 
-            }
-        })
-    } catch (error) {
-        
-        res.status(403).json({ message: error })
-
-    }
+    await Recruiter.findOne(
+      { googleId: data.googleId },
+      async (err, result) => {
+        if (err) {
+          res.status(403).json({ message: err });
+        } else if (result) {
+          console.log(result);
+          res.status(203).json(result);
+        } else {
+          const result = await Recruiter.create({
+            name: data.name,
+            emailId: data.email,
+            username: data.givenName,
+            googleId: data.googleId,
+            imageUrl: data.imageUrl,
+          });
+          console.log(res);
+          res.status(203).json(result);
+        }
+      }
+    );
+  } catch (error) {
+    res.status(403).json({ message: error });
+  }
 };
 /* export const getUser = async (req , res) => {
     const { data } = req.body;
@@ -119,47 +148,40 @@ export const createRecruiter = async (req, res) => {
     res.json({data : userr}) ;
     //res.json(req.user) Id of the user
 }; */
-export const getRecruiter = async (req,res) =>{
-    
-    const { id } = req.params;
-    try {
-        const recruiter = await Recruiter.findById(id);
+export const getRecruiter = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const recruiter = await Recruiter.findById(id);
 
-        res.status(200).json(recruiter);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-
-    }
-}
-export const getSpecificRecruiter = async (req, res) => {
-    const { data } = req.body;
-    console.log(data)
-
-    try {
-
-        const specificRecruiter = await Recruiter.findOne({ googleId: data }).sort({ _id: -1 });
-        if (specificRecruiter) {
-
-            res.status(200).json({ data: specificRecruiter });
-        } else {
-            Recruiter.findById(data, (err, result) => {
-                if (err) {
-                    res.status(403).json(err)
-                } else {
-                    res.status(203).json({ data: result })
-                }
-            })
-        }
-
-
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error });
-    }
+    res.status(200).json(recruiter);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
+export const getSpecificRecruiter = async (req, res) => {
+  const { data } = req.body;
+  console.log(data);
 
-
+  try {
+    const specificRecruiter = await Recruiter.findOne({ googleId: data }).sort({
+      _id: -1,
+    });
+    if (specificRecruiter) {
+      res.status(200).json({ data: specificRecruiter });
+    } else {
+      Recruiter.findById(data, (err, result) => {
+        if (err) {
+          res.status(403).json(err);
+        } else {
+          res.status(203).json({ data: result });
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
+};
 
 /* export const removerFollower = async (req, res) => {
     const follower = req.body.follower;

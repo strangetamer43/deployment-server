@@ -1,34 +1,32 @@
 import express from "express";
-import { v2 as cloudinary } from 'cloudinary';
 import fs from "fs";
-
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API,
-    api_secret: process.env.CLOUDINARY_SECRET,
-});
-
+import { s3, s3Client } from "../s3.js";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const imageUpload = async (req, res) => {
-    
-    const image = req.files.image;
-    try {
+  const image = req.files.image;
+  try {
+    const img_name = `${Date.now()}-${image.name}`;
+    const response = await s3.putObject({
+      Bucket: process.env.AWS_S3_BUCKET,
+      Key: img_name,
+      Body: image.data,
+    });
 
-        await cloudinary.uploader.upload(image.tempFilePath, async (err, resultB) => {
-
-            const img = resultB.url;
-            fs.unlinkSync(image.tempFilePath);
-            res.status(203).json(img)
-
-        })
-
-    } catch (error) {
-        res.status(403).json({ message: error.message })
+    if (response.$metadata.httpStatusCode === 200) {
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET,
+        Key: img_name,
+      });
+      // Generate a pre-signed URL for the media item
+      const img = await getSignedUrl(s3Client, command);
+      fs.unlinkSync(image.tempFilePath);
+      res.status(203).json(img);
     }
-
-
-
-}
+  } catch (error) {
+    res.status(403).json({ message: error.message });
+  }
+};
 
 export default imageUpload;

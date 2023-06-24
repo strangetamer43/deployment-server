@@ -1,36 +1,35 @@
 import express from "express";
-import { v2 as cloudinary } from 'cloudinary';
-import fs from "fs"
+import fs from "fs";
+import { s3, s3Client } from "../s3.js";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API,
-    api_secret: process.env.CLOUDINARY_SECRET,
-});
-
-// after uploading the video directly add it directly to the list of videos for the response 
+// after uploading the video directly add it directly to the list of videos for the response
 const audioUpload = async (req, res) => {
-    const video = req.files.file;
-    console.log(video)
-    try {
-        await cloudinary.uploader.upload(video.tempFilePath, {
-            resource_type: "video",
-            chunk_size: 6000000,
-            eager: [
-                { width: 300, height: 300, crop: "pad", audio_codec: "none" },
-                { width: 160, height: 100, crop: "crop", gravity: "south", audio_codec: "none" }],
-        }).then((result) => {
-
-            console.log(result.url)
-            fs.unlinkSync(video.tempFilePath)
-            res.status(203).json(result.url)
-        })
-
-    } catch (error) {
-        res.status(403).json({ message: error })
+  const video = req.files.file;
+  console.log(video);
+  try {
+    const vid_name = `${Date.now()}-${video.name}`;
+    const response = await s3.putObject({
+      Bucket: process.env.AWS_S3_BUCKET,
+      Key: vid_name,
+      Body: video.data,
+    });
+    if (response.$metadata.httpStatusCode === 200) {
+      // Create a command to fetch the media item from AWS S3
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET,
+        Key: mediaItem.key,
+      });
+      // Generate a pre-signed URL for the media item
+      const url = await getSignedUrl(s3Client, command);
+      console.log(url);
+      fs.unlinkSync(video.tempFilePath);
+      res.status(203).json(url);
     }
-
-}
+  } catch (error) {
+    res.status(403).json({ message: error });
+  }
+};
 
 export default audioUpload;
